@@ -8,11 +8,13 @@
 
 import UIKit
 import CoreData
+import Alamofire
+import SwiftyJSON
 
-struct CellData {
-    var firstMessage: String?
-    var secondMessage: String?
-}
+// struct CellData {
+//    var firstMessage: String?
+//    var secondMessage: String?
+// }
 
 class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
 
@@ -34,6 +36,9 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Navigation Controller Item Name
+        navigationItem.title = "Яндекс Переводчик"
+        
         // Initialize Delegates and Data Sources
         tableView.dataSource = self
         tableView.delegate = self
@@ -117,13 +122,23 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         
         let newItem = TranslationEntity(context: context)
         newItem.originalText = textField.text!
-        newItem.translatedText = textField.text! + "%"
-        self.translations.append(newItem)
-        // Dismiss Keyboard Once Translation is Sent
-        view.endEditing(true)
-        textField.text = ""
-        self.tableView.reloadData()
+        let params : [String:String] = ["key": Constants.apiKey, "text": textField.text!, "lang" : "ru-en"]
         
+        // Initialize Alamofire Request (REMEMBER! ASYNC REQUEST)
+        Alamofire.request(Constants.translateURL, method: .get, parameters: params).responseJSON { (response) in
+            
+            if response.result.isSuccess {
+                let responseReturnTemp : JSON =  JSON(response.result.value!)
+                newItem.translatedText = (responseReturnTemp["text"].arrayValue.first?.string!)!
+                self.translations.append(newItem)
+                // Dismiss Keyboard Once Translation is Sent
+                self.view.endEditing(true)
+                self.textField.text = ""
+                self.tableView.reloadData()
+            } else {
+                print("Error With Translation!")
+            }
+        }
     }
     
     // MARK: HELPER FUNCTIONS
