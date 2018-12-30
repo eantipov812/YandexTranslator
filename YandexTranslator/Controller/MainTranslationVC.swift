@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 struct CellData {
     var firstMessage: String?
@@ -21,10 +22,13 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     
+    // Initialize Context to Manage Core Data
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     // Set Languages
     let languages = ["en", "ru"]
     
-    var translations = [Translation]()
+    var translations = [TranslationEntity]()
     var translation: Translation!
     
     
@@ -46,6 +50,9 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         tableView.register(TranslationCell.self, forCellReuseIdentifier: "translationCellID")
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
+        
+        // Load all of the Translations
+        loadItems()
     }
     
     // MARK: Keyboard Handling
@@ -76,33 +83,70 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     
     // MARK: TABLE VIEW
     
+    // TABLE VIEW - METHOD TO RETURN NUMBER OF ROWS
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return translations.count
     }
     
+    // TABLE VIEW - METHOD TO UPDATE TABLE VIEW CELLS
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "translationCellID") as! TranslationCell
         cell.firstLabelOne = translations[indexPath.row].originalText
-        cell.secondLabelTwo = translations[indexPath.row].translationText
+        cell.secondLabelTwo = translations[indexPath.row].translatedText
         cell.layoutSubviews()
         return cell
     }
     
+    // TABLE VIEW - METHOD TO DELETE ROWS
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            
+            context.delete(translations[indexPath.row])
+            translations.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            saveItems()
+        }
+        
+        
+    }
     
     
+    // MARK: SEND BUTTON
     @IBAction func sendButtonPressed(_ sender: Any) {
-        let newItem = Translation()
+        
+        let newItem = TranslationEntity(context: context)
         newItem.originalText = textField.text!
-        newItem.translationText = textField.text! + "%"
+        newItem.translatedText = textField.text! + "%"
         self.translations.append(newItem)
         // Dismiss Keyboard Once Translation is Sent
         view.endEditing(true)
         textField.text = ""
         self.tableView.reloadData()
         
+    }
+    
+    // MARK: HELPER FUNCTIONS
+    func saveItems(){
         
+        do {
+           try context.save()
+        } catch {
+            print("Error Saving Context")
+        }
+        tableView.reloadData()
         
     }
+    
+    func loadItems(){
+        let request : NSFetchRequest<TranslationEntity> = TranslationEntity.fetchRequest()
+        do {
+         translations = try context.fetch(request)
+        } catch {
+            print("Error Fetching Data from Context: \(error)")
+        }
+    }
+    
     
     
 }

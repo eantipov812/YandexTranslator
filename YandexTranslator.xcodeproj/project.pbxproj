@@ -15,6 +15,7 @@
 		0C561F4B21D8095000712203 /* Translation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C561F4A21D8095000712203 /* Translation.swift */; };
 		0C561F4D21D8099000712203 /* TranslationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C561F4C21D8099000712203 /* TranslationCell.swift */; };
 		0CED340E21D8408700A37B27 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CED340D21D8408700A37B27 /* Constants.swift */; };
+		0CED345821D9694400A37B27 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0CED345621D9694400A37B27 /* DataModel.xcdatamodeld */; };
 		23EB98F7D226E058B1BA0139 /* Pods_YandexTranslator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183ADD0EF52DF21F0754B793 /* Pods_YandexTranslator.framework */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		0C561F4A21D8095000712203 /* Translation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translation.swift; sourceTree = "<group>"; };
 		0C561F4C21D8099000712203 /* TranslationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationCell.swift; sourceTree = "<group>"; };
 		0CED340D21D8408700A37B27 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0CED345721D9694400A37B27 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		183ADD0EF52DF21F0754B793 /* Pods_YandexTranslator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YandexTranslator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5B9856EA3CE6B6EF30C6D97 /* Pods-YandexTranslator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YandexTranslator.release.xcconfig"; path = "Pods/Target Support Files/Pods-YandexTranslator/Pods-YandexTranslator.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -100,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				0C561F4A21D8095000712203 /* Translation.swift */,
+				0CED345621D9694400A37B27 /* DataModel.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -246,6 +249,7 @@
 				0CED340E21D8408700A37B27 /* Constants.swift in Sources */,
 				0C54B7C621D6817800FAC839 /* AppDelegate.swift in Sources */,
 				0C561F4B21D8095000712203 /* Translation.swift in Sources */,
+				0CED345821D9694400A37B27 /* DataModel.xcdatamodeld in Sources */,
 				0C561F4721D8074F00712203 /* MainTranslationVC.swift in Sources */,
 				0C561F4D21D8099000712203 /* TranslationCell.swift in Sources */,
 			);
@@ -449,6 +453,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		0CED345621D9694400A37B27 /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				0CED345721D9694400A37B27 /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 0CED345721D9694400A37B27 /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 0C54B7BA21D6817700FAC839 /* Project object */;
 }
