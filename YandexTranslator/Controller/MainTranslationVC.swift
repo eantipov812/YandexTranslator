@@ -8,6 +8,11 @@
 
 import UIKit
 
+struct CellData {
+    var firstMessage: String?
+    var secondMessage: String?
+}
+
 class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
 
     // Outlets
@@ -16,8 +21,12 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     
+    // Set Languages
+    let languages = ["en", "ru"]
+    
     var translations = [Translation]()
     var translation: Translation!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,21 +77,31 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     // MARK: TABLE VIEW
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return translations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "translationCellID") as! TranslationCell
-        cell.firstLabelOne = "Hello"
-        cell.secondLabelTwo = "HI HI HI AGAIN"
+        cell.firstLabelOne = translations[indexPath.row].originalText
+        cell.secondLabelTwo = translations[indexPath.row].translationText
         cell.layoutSubviews()
         return cell
     }
-
+    
+    
     
     @IBAction func sendButtonPressed(_ sender: Any) {
+        let newItem = Translation()
+        newItem.originalText = textField.text!
+        newItem.translationText = textField.text! + "%"
+        self.translations.append(newItem)
         // Dismiss Keyboard Once Translation is Sent
         view.endEditing(true)
+        textField.text = ""
+        self.tableView.reloadData()
+        
+        
+        
     }
     
     
@@ -97,8 +116,20 @@ extension MainTranslationVC : UIPickerViewDataSource, UIPickerViewDelegate {
     
     // Function Number of Rows in the Picker View
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return 2
+        return languages.count
     }
     
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        var rowLabel : String?
+        switch row {
+        case 0:
+            rowLabel = "🇺🇸"
+        case 1:
+            rowLabel = "🇷🇺"
+        default:
+            rowLabel = nil
+        }
+        return rowLabel
+    }
     
 }

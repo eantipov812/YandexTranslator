@@ -11,7 +11,11 @@ import UIKit
 
 class Translation {
     
+    var originalText = ""
+    var translationText = ""
+    
     // Initialize Variables
+    /*
     private var _originalText : String!
     private var _translationText : String!
     
@@ -28,7 +32,7 @@ class Translation {
         _translationText = translationText
     }
     
-    
+    */
     
     
 }

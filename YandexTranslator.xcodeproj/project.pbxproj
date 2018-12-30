@@ -14,6 +14,7 @@
 		0C561F4721D8074F00712203 /* MainTranslationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C561F4621D8074F00712203 /* MainTranslationVC.swift */; };
 		0C561F4B21D8095000712203 /* Translation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C561F4A21D8095000712203 /* Translation.swift */; };
 		0C561F4D21D8099000712203 /* TranslationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C561F4C21D8099000712203 /* TranslationCell.swift */; };
+		0CED340E21D8408700A37B27 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CED340D21D8408700A37B27 /* Constants.swift */; };
 		23EB98F7D226E058B1BA0139 /* Pods_YandexTranslator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183ADD0EF52DF21F0754B793 /* Pods_YandexTranslator.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		0C561F4621D8074F00712203 /* MainTranslationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTranslationVC.swift; sourceTree = "<group>"; };
 		0C561F4A21D8095000712203 /* Translation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translation.swift; sourceTree = "<group>"; };
 		0C561F4C21D8099000712203 /* TranslationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationCell.swift; sourceTree = "<group>"; };
+		0CED340D21D8408700A37B27 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		183ADD0EF52DF21F0754B793 /* Pods_YandexTranslator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YandexTranslator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5B9856EA3CE6B6EF30C6D97 /* Pods-YandexTranslator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YandexTranslator.release.xcconfig"; path = "Pods/Target Support Files/Pods-YandexTranslator/Pods-YandexTranslator.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -65,6 +67,7 @@
 		0C54B7C421D6817800FAC839 /* YandexTranslator */ = {
 			isa = PBXGroup;
 			children = (
+				0CED340C21D8407300A37B27 /* Helpers */,
 				0C54B7D921D6954A00FAC839 /* Model */,
 				0C54B7D821D6954700FAC839 /* View */,
 				0C54B7D721D6954400FAC839 /* Controller */,
@@ -99,6 +102,14 @@
 				0C561F4A21D8095000712203 /* Translation.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		0CED340C21D8407300A37B27 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				0CED340D21D8408700A37B27 /* Constants.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		1315B017E034A146AC5CA06E /* Pods */ = {
@@ -232,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CED340E21D8408700A37B27 /* Constants.swift in Sources */,
 				0C54B7C621D6817800FAC839 /* AppDelegate.swift in Sources */,
 				0C561F4B21D8095000712203 /* Translation.swift in Sources */,
 				0C561F4721D8074F00712203 /* MainTranslationVC.swift in Sources */,
