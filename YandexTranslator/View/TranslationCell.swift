@@ -19,7 +19,6 @@ class TranslationCell: UITableViewCell {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.isScrollEnabled = false
         textView.font = UIFont(name: "Baskerville", size: 22)
-        textView.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
         return textView
     }()
     
@@ -28,7 +27,6 @@ class TranslationCell: UITableViewCell {
         textViewTwo.translatesAutoresizingMaskIntoConstraints = false
         textViewTwo.isScrollEnabled = false
         textViewTwo.font = UIFont(name: "Verdana", size: 30)
-        textViewTwo.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
         return textViewTwo
     }()
     

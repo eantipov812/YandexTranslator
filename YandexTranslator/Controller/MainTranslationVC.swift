@@ -23,12 +23,15 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     @IBOutlet weak var languagePickerView: UIPickerView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var bottomView: UIView!
+    
     
     // Initialize Context to Manage Core Data
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     // Set Languages
     let languages = ["en", "ru"]
+    var originalLang : String = "en"
     
     var translations = [TranslationEntity]()
     var translation: Translation!
@@ -55,9 +58,19 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         tableView.register(TranslationCell.self, forCellReuseIdentifier: "translationCellID")
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
+        tableView.separatorColor = UIColor.clear
         
         // Load all of the Translations
         loadItems()
+        
+        // Textfield Placeholder
+        bottomView.backgroundColor = UIColor(red:0.07, green:0.39, blue:0.89, alpha:1.0)
+        bottomView.layer.cornerRadius = 28
+        textField.backgroundColor = UIColor.clear
+        textField.font = UIFont(name: "Verdana", size: 16)
+        textField.textColor = UIColor.white
+        textField.borderStyle = .none
+        textField.attributedPlaceholder = NSAttributedString(string: "Английский", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
     }
     
     // MARK: Keyboard Handling
@@ -99,6 +112,8 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         cell.firstLabelOne = translations[indexPath.row].originalText
         cell.secondLabelTwo = translations[indexPath.row].translatedText
         cell.layoutSubviews()
+        // No Separator Within Table View
+        tableView.separatorColor = UIColor.clear
         return cell
     }
     
@@ -122,7 +137,17 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         
         let newItem = TranslationEntity(context: context)
         newItem.originalText = textField.text!
-        let params : [String:String] = ["key": Constants.apiKey, "text": textField.text!, "lang" : "ru-en"]
+        var langTemp = ""
+        
+        // Determine Direction of the translation
+        if originalLang == "ru" {
+            langTemp = "ru-en"
+        } else {
+            langTemp = "en-ru"
+        }
+        
+        // Set Parameters
+        let params : [String:String] = ["key": Constants.apiKey, "text": textField.text!, "lang" : langTemp]
         
         // Initialize Alamofire Request (REMEMBER! ASYNC REQUEST)
         Alamofire.request(Constants.translateURL, method: .get, parameters: params).responseJSON { (response) in
@@ -190,5 +215,37 @@ extension MainTranslationVC : UIPickerViewDataSource, UIPickerViewDelegate {
         }
         return rowLabel
     }
+    
+    // Select Row of Picker View
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        
+        switch row {
+        case 0:
+            originalLang = "en"
+            bottomView.backgroundColor = UIColor(red:0.07, green:0.39, blue:0.89, alpha:1.0)
+            bottomView.layer.cornerRadius = 28
+            textField.backgroundColor = UIColor.clear
+            textField.font = UIFont(name: "Verdana", size: 16)
+            textField.attributedPlaceholder = NSAttributedString(string: "Английский", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+        case 1:
+            originalLang = "ru"
+            bottomView.backgroundColor = UIColor(red:0.90, green:0.20, blue:0.29, alpha:1.0)
+            bottomView.layer.cornerRadius = 28
+            textField.backgroundColor = UIColor.clear
+            textField.font = UIFont(name: "Verdana", size: 16)
+            textField.attributedPlaceholder = NSAttributedString(string: "Русский", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+        default:
+            textField.placeholder = ""
+        }
+        
+     
+
+        
+        
+        
+        
+    }
+    
     
 }
