@@ -89,10 +89,17 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="T4g-75-KqK"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Atm-JU-aBD"/>
+                    <navigationItem key="navigationItem" id="Atm-JU-aBD">
+                        <barButtonItem key="rightBarButtonItem" systemItem="play" id="qhX-GD-wdH">
+                            <connections>
+                                <action selector="recordButtonPressed:" destination="kjh-Wb-057" id="guT-Ym-cxm"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="bottomView" destination="yuM-TN-WDk" id="Tna-my-Uvh"/>
                         <outlet property="languagePickerView" destination="h8f-L6-kfk" id="cwg-JL-LKy"/>
+                        <outlet property="recordButton" destination="qhX-GD-wdH" id="9Af-tW-kbD"/>
                         <outlet property="sendButton" destination="7pW-5o-v6d" id="MXJ-t6-O76"/>
                         <outlet property="tableView" destination="FVq-kZ-6G9" id="teq-W4-OSS"/>
                         <outlet property="textField" destination="7AS-xl-8el" id="pwu-E8-AW5"/>

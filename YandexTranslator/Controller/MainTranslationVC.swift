@@ -10,13 +10,12 @@ import UIKit
 import CoreData
 import Alamofire
 import SwiftyJSON
+import Speech
+import AVFoundation
 
-// struct CellData {
-//    var firstMessage: String?
-//    var secondMessage: String?
-// }
 
-class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+
+class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, SFSpeechRecognizerDelegate {
 
     // Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -24,7 +23,10 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var bottomView: UIView!
+    @IBOutlet weak var recordButton: UIBarButtonItem!
     
+    
+    // Initialize Speech Recognizer
     
     // Initialize Context to Manage Core Data
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -36,6 +38,13 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
     var translations = [TranslationEntity]()
     var translation: Translation!
     
+    // MARK: SPEECH RECOGNITION
+    // Initialize Audio Engine
+    let audioEngine = AVAudioEngine()
+    // Speech Recognition
+    private let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer(locale: Locale.init(identifier: "en-US"))
+    var recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+    var recognitionTask: SFSpeechRecognitionTask?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +56,7 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         tableView.delegate = self
         languagePickerView.dataSource = self
         languagePickerView.delegate = self
+        speechRecognizer?.delegate = self
         
         // Add Keyboard Handling
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -71,7 +81,34 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         textField.textColor = UIColor.white
         textField.borderStyle = .none
         textField.attributedPlaceholder = NSAttributedString(string: "Английский", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+        
+        recordButton.isEnabled = false
+        
+        SFSpeechRecognizer.requestAuthorization { (authStatus) in
+            var isButtonEnabled = false
+            
+            switch authStatus {
+            case .authorized:
+                isButtonEnabled = true
+            case .denied:
+                isButtonEnabled = false
+                print("User Denied Access To Speech Recognition")
+            case .restricted:
+                isButtonEnabled = false
+                print("Speech Recognition is Restricted")
+            case .notDetermined:
+                isButtonEnabled = false
+                print("Speech recognition is not yet authorized")
+            }
+            
+            OperationQueue.main.addOperation {
+                self.recordButton.isEnabled = isButtonEnabled
+            }
+        }
+        
     }
+    
+    
     
     // MARK: Keyboard Handling
     @objc func dismissKeyboard() {
@@ -131,6 +168,8 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
         
     }
     
+
+    
     
     // MARK: SEND BUTTON
     @IBAction func sendButtonPressed(_ sender: Any) {
@@ -165,6 +204,87 @@ class MainTranslationVC: UIViewController, UITextFieldDelegate, UITableViewDeleg
             }
         }
     }
+    
+    
+    @IBAction func recordButtonPressed(_ sender: Any) {
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            recognitionRequest.endAudio()
+            recordButton.isEnabled = false
+            recordButton.tintColor = UIColor.red
+        } else {
+            startRecording()
+            recordButton.tintColor = UIColor.green
+        }
+        
+    }
+    
+    
+    func startRecording() {
+        
+        if recognitionTask != nil {
+            recognitionTask?.cancel()
+            recognitionTask = nil
+        }
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        
+        do {
+            try audioSession.setCategory(AVAudioSession.Category.record, mode: AVAudioSession.Mode.measurement)
+            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        } catch {
+            print("audioSession Properties were not set!")
+        }
+        
+        
+        let inputNode = audioEngine.inputNode
+        
+        recognitionRequest.shouldReportPartialResults = true
+        
+        recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in
+            var isFinal = false
+            
+            if result != nil {
+                self.textField.text = result?.bestTranscription.formattedString
+                isFinal = (result?.isFinal)!
+            }
+            
+            if error != nil || isFinal {
+                self.audioEngine.stop()
+                inputNode.removeTap(onBus: 0)
+                
+                self.recognitionTask = nil
+                self.recordButton.isEnabled = true
+            }
+            
+        })
+        
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
+            self.recognitionRequest.append(buffer)
+        }
+        
+        audioEngine.prepare()
+        
+        do {
+            try audioEngine.start()
+        } catch {
+            print("audioEngine couldn't start because of an error!")
+        }
+        
+        textField.text = "Say Something I am listening!"
+        
+    }
+    
+    func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
+        if available {
+            recordButton.isEnabled = true
+        } else {
+            recordButton.isEnabled = false
+        }
+    }
+    
+
     
     // MARK: HELPER FUNCTIONS
     func saveItems(){
@@ -238,14 +358,5 @@ extension MainTranslationVC : UIPickerViewDataSource, UIPickerViewDelegate {
         default:
             textField.placeholder = ""
         }
-        
-     
-
-        
-        
-        
-        
     }
-    
-    
 }
